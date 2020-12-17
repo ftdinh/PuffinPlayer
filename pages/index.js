@@ -2,10 +2,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Grid } from '@material-ui/core';
 import Navbar from '../components/Navbar';
+import StreamPreview from '../components/StreamPreview';
 import useSWR from 'swr';
 
 export default function Home() {
-  const { data, error } = useSWR('/api/streams');
+  const { data, error } = useSWR('/api/streams', {
+    revalidateOnFocus: false
+  });
 
   if (error) {
     return <div>failed to load</div>;
@@ -14,7 +17,6 @@ export default function Home() {
     return <div>loading...</div>;
   }
 
-  const image = s => s.replace('{width}', '320').replace('{height}', '180');
   const streamers = data.data;
 
   return (
@@ -23,7 +25,12 @@ export default function Home() {
       <Container>
         <Grid container>
           {streamers.map(streamer => (
-            <img src={image(streamer.thumbnail_url)}  />
+            <StreamPreview
+              title={streamer.title}
+              username={streamer.user_name}
+              thumbnail_url={streamer.thumbnail_url}
+              viewerCount={streamer.viewer_count}
+            />
           ))}
         </Grid>
       </Container>

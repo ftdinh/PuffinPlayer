@@ -54,7 +54,7 @@ const Navbar = () => {
           />
         </div>
         <Button color="inherit">
-          <a href="#">
+          <a href="https://id.twitch.tv/oauth2/authorize?client_id=1aifbr96mh1loogwn11nwz3ob6gcns&redirect_uri=http://localhost:3000&response_type=token&scope=user:edit">
             Login
           </a>
         </Button>
