@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { signIn, signOut, useSession } from 'next-auth/client';
 import { 
          Button,
          AppBar,
@@ -29,7 +30,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Navbar = () => {
+  const [session, loading] = useSession();
   const classes = useStyles();
+
+  const BASE_URL = 'https://id.twitch.tv/oauth2/authorize';
+  const CLIENT_ID = '1aifbr96mh1loogwn11nwz3ob6gcns';
+  const REDIRECT_URI = process.env.NODE_ENV === 'development' ?
+    'http://localhost:3000' :
+    'https://puffinplayer.herokuapp.com';
 
   return (
     <AppBar position="sticky">
@@ -53,11 +61,14 @@ const Navbar = () => {
             }}
           />
         </div>
-        <Button color="inherit">
-          <a href="https://id.twitch.tv/oauth2/authorize?client_id=1aifbr96mh1loogwn11nwz3ob6gcns&redirect_uri=http://localhost:3000&response_type=token&scope=user:edit">
-            Login
-          </a>
-        </Button>
+
+        {!session && <>
+          <Button color="inherit" onClick={signIn}>Login</Button>
+        </>}
+
+        {session && <> 
+          <Button color="inherit" onClick={signOut}>Logout</Button>
+        </>}
       </Toolbar>
     </AppBar>
   );

@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import StreamPreview from '../components/StreamPreview';
 import useSWR from 'swr';
 
-export default function Home() {
+export default function Home(props) {
   const { data, error } = useSWR('/api/streams', {
     revalidateOnFocus: false
   });

@@ -12,8 +12,8 @@ const cache = new NodeCache();
 async function getAccessToken() {
   try {
     const url = 'https://id.twitch.tv/oauth2/token';
-    const id = process.env.TWITCH_CLIENT_ID;
-    const secret = process.env.TWITCH_CLIENT_SECRET;
+    const id = process.env.TWITCH_ID;
+    const secret = process.env.TWITCH_SECRET;
     const response = await axios.post(`${url}?client_id=${id}&client_secret=${secret}&grant_type=client_credentials`);
     cache.set('access_token', response.data.access_token, response.data.expires_in);
     console.log('Set access token');
@@ -31,7 +31,7 @@ app.prepare().then(() => {
       await getAccessToken();
     }
     req.headers['Authorization'] = cache.get('access_token');
-    req.headers['Client-Id'] = process.env.TWITCH_CLIENT_ID;
+    req.headers['Client-Id'] = process.env.TWITCH_ID;
     return handle(req, res);
   });
 
