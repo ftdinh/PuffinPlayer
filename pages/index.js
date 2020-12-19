@@ -1,11 +1,14 @@
 import Head from 'next/head';
 import { getSession, useSession } from 'next-auth/client';
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, Tab } from '@material-ui/core';
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { useState } from 'react';
+import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import StreamPreview from '../components/StreamPreview';
-import useSWR from 'swr';
 
 export default function Home(props) {
+  const [ tab, setTab ] = useState('streamers');
   const { data, error } = useSWR('/api/streams', {
     revalidateOnFocus: false
   });
@@ -27,19 +30,27 @@ export default function Home(props) {
       </Head>
       <Navbar />
       <Container>
-        <Grid container>
-          {!session && <>
-            lmao
-          </>}
-          {streamers.map(streamer => (
-            <StreamPreview
-              title={streamer.title}
-              username={streamer.user_name}
-              thumbnail_url={streamer.thumbnail_url}
-              viewerCount={streamer.viewer_count}
-            />
-          ))}
-        </Grid>
+        <TabContext value={tab}>
+          <TabList onChange={(event, value) => setTab(value)}>
+            <Tab label="Streamers" value="streamers" />
+            <Tab label="Games" value="games" />
+          </TabList>
+          <TabPanel value="streamers">
+            <Grid container>
+              {streamers.map(streamer => (
+                <StreamPreview
+                  title={streamer.title}
+                  username={streamer.user_name}
+                  thumbnail_url={streamer.thumbnail_url}
+                  viewerCount={streamer.viewer_count}
+                />
+              ))}
+            </Grid>
+          </TabPanel>
+          <TabPanel value="games">
+            this is a test
+          </TabPanel>
+        </TabContext>
       </Container>
     </div>
   );
