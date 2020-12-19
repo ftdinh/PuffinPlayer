@@ -1,3 +1,4 @@
+import { Provider } from 'next-auth/client';
 import { ThemeProvider } from '@material-ui/core/styles';
 import '../styles/globals.css'
 import "fontsource-roboto/300-normal.css";
@@ -8,9 +9,11 @@ import theme from '../src/theme';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <Provider session={pageProps.session}>
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </Provider>
   );
 }
 

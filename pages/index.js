@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Link from 'next/link';
+import { getSession, useSession } from 'next-auth/client';
 import { Container, Grid } from '@material-ui/core';
 import Navbar from '../components/Navbar';
 import StreamPreview from '../components/StreamPreview';
@@ -9,6 +9,7 @@ export default function Home(props) {
   const { data, error } = useSWR('/api/streams', {
     revalidateOnFocus: false
   });
+  const [session] = useSession();
 
   if (error) {
     return <div>failed to load</div>;
@@ -21,9 +22,15 @@ export default function Home(props) {
 
   return (
     <div>
+      <Head>
+        <title>Home - PuffinPlayer</title>
+      </Head>
       <Navbar />
       <Container>
         <Grid container>
+          {!session && <>
+            lmao
+          </>}
           {streamers.map(streamer => (
             <StreamPreview
               title={streamer.title}
@@ -36,4 +43,15 @@ export default function Home(props) {
       </Container>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  console.log(session);
+
+  return {
+    props: {
+      session
+    }
+  }
 }
