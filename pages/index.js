@@ -7,12 +7,40 @@ import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import StreamPreview from '../components/StreamPreview';
 
+function useFollowing(id) {
+  const { data, error } = useSWR(`/api/users/follows?from_id=${id}`, {
+    revalidateOnFocus: false
+  });
+  return {
+    following: data,
+    isLoading: !error & !data,
+    isError: error
+  }
+}
+
+function useLiveFollowing(userIds) {
+  const followingQuery = userIds ? userIds.join('&user_id=') : null;
+  const { data, error } = useSWR(`/api/streams?user_id=${followingQuery}`, {
+    revalidateOnFocus: false
+  });
+  return {
+    liveFollowing: data,
+    isLoading: !error & !data,
+    isError: error
+  }
+}
+
 export default function Home(props) {
-  const [ tab, setTab ] = useState('streamers');
+  const [ tab, setTab ] = useState('Streamers');
   const { data, error } = useSWR('/api/streams', {
     revalidateOnFocus: false
   });
-  const [session] = useSession();
+  const [ session ] = useSession();
+  const { following } = useFollowing(props.userId);
+  const followingIds = following ? following.data.map(relation => relation.to_id) : null;
+  const { liveFollowing } = useLiveFollowing(followingIds);
+
+  console.log(liveFollowing);
 
   if (error) {
     return <div>failed to load</div>;
@@ -20,6 +48,8 @@ export default function Home(props) {
   if (!data) {
     return <div>loading...</div>;
   }
+
+  const tabs = session ? ["Following", "Streamers", "Games"] : ["Streamers", "Games"];
 
   const streamers = data.data;
 
@@ -32,10 +62,21 @@ export default function Home(props) {
       <Container>
         <TabContext value={tab}>
           <TabList onChange={(event, value) => setTab(value)}>
-            <Tab label="Streamers" value="streamers" />
-            <Tab label="Games" value="games" />
+            {tabs.map(tab => <Tab label={tab} value={tab} />)}
           </TabList>
-          <TabPanel value="streamers">
+          <TabPanel value="Following">
+            <Grid container>
+              {liveFollowing && liveFollowing.data.map(streamer => (
+                <StreamPreview
+                  title={streamer.title}
+                  username={streamer.user_name}
+                  thumbnail_url={streamer.thumbnail_url}
+                  viewerCount={streamer.viewer_count}
+                />
+              ))}
+            </Grid>
+          </TabPanel>
+          <TabPanel value="Streamers">
             <Grid container>
               {streamers.map(streamer => (
                 <StreamPreview
@@ -47,7 +88,7 @@ export default function Home(props) {
               ))}
             </Grid>
           </TabPanel>
-          <TabPanel value="games">
+          <TabPanel value="Games">
             this is a test
           </TabPanel>
         </TabContext>
@@ -58,11 +99,9 @@ export default function Home(props) {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  console.log(session);
-
   return {
     props: {
-      session
+      userId: session && session.id
     }
   }
 }

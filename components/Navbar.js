@@ -33,12 +33,6 @@ const Navbar = () => {
   const [session, loading] = useSession();
   const classes = useStyles();
 
-  const BASE_URL = 'https://id.twitch.tv/oauth2/authorize';
-  const CLIENT_ID = '1aifbr96mh1loogwn11nwz3ob6gcns';
-  const REDIRECT_URI = process.env.NODE_ENV === 'development' ?
-    'http://localhost:3000' :
-    'https://puffinplayer.herokuapp.com';
-
   return (
     <AppBar position="sticky">
       <Toolbar>
