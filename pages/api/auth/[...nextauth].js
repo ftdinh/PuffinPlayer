@@ -20,7 +20,6 @@ const options = {
       return Promise.resolve(session);
     },
     jwt: async (token, user, account, profile, isNewUser) => {
-      console.log(account);
       if (account) {
         token.accessToken = account.accessToken;
         token.refreshToken = account.refreshToken;

@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
 
         {!session && <>
-          <Button color="inherit" onClick={signIn}>Login</Button>
+          <Button color="inherit" onClick={() => signIn('twitch')}>Login with Twitch</Button>
         </>}
 
         {session && <> 

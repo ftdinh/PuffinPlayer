@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import { getSession, useSession } from 'next-auth/client';
-import { Container, Grid, Tab } from '@material-ui/core';
+import { Container, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import Navbar from '../components/Navbar';
-import StreamPreview from '../components/StreamPreview';
+import StreamPreviews from '../components/StreamPreviews';
 
 function useFollowing(id) {
   const { data, error } = useSWR(`/api/users/follows?from_id=${id}`, {
@@ -39,8 +39,13 @@ export default function Home(props) {
   const { following } = useFollowing(props.userId);
   const followingIds = following ? following.data.map(relation => relation.to_id) : null;
   const { liveFollowing } = useLiveFollowing(followingIds);
+  const tabs = session ? ["Following", "Streamers", "Games"] : ["Streamers", "Games"];
 
-  console.log(liveFollowing);
+  useEffect(() => {
+    if (session) {
+      setTab('Following');
+    }
+  }, [session]);
 
   if (error) {
     return <div>failed to load</div>;
@@ -48,8 +53,6 @@ export default function Home(props) {
   if (!data) {
     return <div>loading...</div>;
   }
-
-  const tabs = session ? ["Following", "Streamers", "Games"] : ["Streamers", "Games"];
 
   const streamers = data.data;
 
@@ -65,28 +68,10 @@ export default function Home(props) {
             {tabs.map(tab => <Tab label={tab} value={tab} />)}
           </TabList>
           <TabPanel value="Following">
-            <Grid container>
-              {liveFollowing && liveFollowing.data.map(streamer => (
-                <StreamPreview
-                  title={streamer.title}
-                  username={streamer.user_name}
-                  thumbnail_url={streamer.thumbnail_url}
-                  viewerCount={streamer.viewer_count}
-                />
-              ))}
-            </Grid>
+            {liveFollowing && <StreamPreviews streams={liveFollowing.data} />}
           </TabPanel>
           <TabPanel value="Streamers">
-            <Grid container>
-              {streamers.map(streamer => (
-                <StreamPreview
-                  title={streamer.title}
-                  username={streamer.user_name}
-                  thumbnail_url={streamer.thumbnail_url}
-                  viewerCount={streamer.viewer_count}
-                />
-              ))}
-            </Grid>
+            <StreamPreviews streams={streamers} />
           </TabPanel>
           <TabPanel value="Games">
             this is a test
