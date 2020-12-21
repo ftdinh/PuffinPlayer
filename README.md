@@ -18,6 +18,8 @@ Once dependencies have been installed, the development server can be started.
 npm run dev
 ```
 
+Visit http://localhost:3000 once the development server is running.
+
 The npm production script is configured to run on heroku, and so if desired, use the heroku cli to create a new app
 
 ```bash
@@ -35,3 +37,7 @@ See heroku documentation for greater detail and most recent information.
 ## Live Server
 
 A live example of the website is hosted at https://puffinplayer.herokuapp.com/
+
+## License
+
+I like to be part of the cool kids club, so the project follows the MIT license (see LICENSE.txt) for details.
