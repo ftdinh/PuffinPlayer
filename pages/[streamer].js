@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { Grid } from '@material-ui/core';
+import Navbar from '../components/Navbar';
 import TwitchVideo from '../components/TwitchVideo';
 import TwitchChat from '../components/TwitchChat';
 
@@ -7,10 +8,11 @@ const Streamer = (props) => {
   const streamer = props.params.streamer;
 
   return (
-    <div>
+    <>
       <Head>
         <title>{streamer}</title>
       </Head>
+      <Navbar />
       <Grid container>
         <Grid item xs={9}>
           <TwitchVideo streamer={streamer} />
@@ -19,7 +21,7 @@ const Streamer = (props) => {
           <TwitchChat streamer={streamer} />
         </Grid>
       </Grid>
-    </div>
+    </>
   );
 }
 

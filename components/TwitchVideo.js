@@ -23,7 +23,7 @@ const TwitchVideo = (props) => {
       <Head>
         <script src="https://embed.twitch.tv/embed/v1.js"></script>
       </Head>
-      <div id="twitch-embed" style={{height: "100vh"}}></div>
+      <div id="twitch-embed" style={{height: "calc(100vh - 64px)"}}></div>
     </div>
   );
 }

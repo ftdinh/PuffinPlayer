@@ -3,7 +3,7 @@ const TwitchChat = (props) => {
   const src=`https://www.twitch.tv/embed/${streamer}/chat?parent=localhost&parent=puffinplayer.herokuapp.com`;
 
   return (
-    <div style={{height: "100vh"}}>
+    <div style={{height: "calc(100vh - 64px)"}}>
       <iframe
         frameBorder="0"
         scrolling="no"
